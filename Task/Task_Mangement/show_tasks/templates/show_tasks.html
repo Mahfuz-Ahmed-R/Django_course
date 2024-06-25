@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1>Tasks</h1>
+  <hr />
+  <div class="d-flex flex-wrap justify-content-center">
+    {% for task in data %}
+    <div class="col-sm-3">
+      <div class="card m-2" style="background: #cf9fff">
+        <div class="card-body">
+          <h6>{{task.id}}</h6>
+          <p>{{task.date_field}}</p>
+          <hr />
+          <h5 class="card-title">{{ task.title }}</h5>
+          <hr />
+          <p class="card-text">{{ task.description }}</p>
+          <hr />
+          <p>
+            Categories: {% for category in task.categories.all %}
+            <button class="btn btn-warning m-1" disabled>{{ category }}</button>
+            {% endfor %}
+          </p>
+          <hr />
+          <p>
+            <input
+              type="checkbox"
+              class="is-complete"
+              data-target="show{{ forloop.counter }}"
+            />
+            Complete
+          </p>
+          <p class="show" id="show{{ forloop.counter }}">
+            <a href="{% url 'edit_tasks' task.id %}" class="btn btn-primary"
+              >Edit</a
+            >
+            <a href="{% url 'delete_tasks' task.id %}" class="btn btn-danger"
+              >Delete</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<script>
+  document.querySelectorAll(".is-complete").forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      const targetId = this.getAttribute("data-target");
+      const element = document.getElementById(targetId);
+      element.style.display = this.checked ? "none" : "block";
+    });
+  });
+</script>
+{% endblock %}
