@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Profile</h1>
+<div
+  class="d-flex flex-wrap justify-content-evenly align-items-center"
+  style="border: 1px solid gray; height: 200px"
+>
+  <div>
+    {%for i in data%}
+    <p><span class="fw-bold">Username:</span> {{i.username}}</p>
+    <p><span class="fw-bold">Name:</span> {{i.first_name}} {{i.last_name}}</p>
+    <p><span class="fw-bold">Email:</span> {{i.email}}</p>
+    {%endfor%}
+  </div>
+  <div>
+    <a class="btn btn-info" href="{%url 'edit_profile'%}"> Edit Profile </a>
+    <a class="btn btn-primary" href="{%url 'password'%}">Change Password</a>
+  </div>
+</div>
+<h2>Purchase History</h2>
+<div id="all_cars">
+  {% for purchase in purchases %}
+  <p>{{ purchase.car.name }} - {{ purchase.purchase_date }}</p>
+  {% endfor %}
+</div>
+{%endblock%}

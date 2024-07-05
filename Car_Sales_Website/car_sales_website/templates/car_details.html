@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block content %} {%load crispy_forms_tags%}
+<h1>Car Details</h1>
+<div class="row">
+  <div class="col-5 mb-5">
+    <img src="{{ car.image.url }}" class="card-img-top" alt="car image" />
+  </div>
+  <div class="col-7">
+    <h5>{{ car.name }}</h5>
+    <p>{{ car.description }}</p>
+    <p id="carCount">Cars Available: <span id="carCountValue">20</span></p>
+    <p>Car Price: {{ car.price }} Tk</p>
+    <p>Brand: {{ car.brand.name }}</p>
+    {%if request.user.is_authenticated%}
+    <a
+      type="submit"
+      href="{% url 'buy_car' car.id %}"
+      class="btn btn-warning mb-5"
+      id="buyNowButton"
+      >Buy Now</a
+    >
+    {%endif%}
+  </div>
+</div>
+<div class="row">
+  <hr />
+  <form method="post" class="col-7">
+    {%csrf_token%}
+    <h1>Add Comments</h1>
+    {{form | crispy}}
+    <button type="submit" class="btn btn-info">Submit</button>
+  </form>
+  <div class="col-5">
+    <h1>Comments</h1>
+    {%for c in comments%}
+    <div class="card m-2">
+      <div class="card-body">
+        <h5 class="card-title">{{c.name}}</h5>
+        <p class="card-text">{{c.email}}</p>
+        <p class="card-text">{{c.body}}</p>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buyNowButton = document.getElementById("buyNowButton");
+    let carCount = 20; // Initial car count
+
+    buyNowButton.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default anchor action
+      carCount = Math.max(0, carCount - 1); // Decrement car count but not below 0
+      document.getElementById("carCountValue").textContent = carCount;
+
+      // Optional: Send the updated count to the server using fetch or XMLHttpRequest
+    });
+  });
+</script>
+{% endblock %}

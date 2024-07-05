@@ -1,0 +1,32 @@
+{%extends 'base.html'%} {%block content%}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Musician Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Album Rating</th>
+      <th scope="col">Instrument Type</th>
+      <th scope="col">Album Name</th>
+      <th scope="col">Release Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for artist in data%}
+    <tr>
+      <td>{{artist.author.id}}</td>
+      <td>
+        <p style="font-weight: bold">
+          {{artist.author.firstName}} {{artist.author.lastName}}
+        </p>
+      </td>
+      <td>{{artist.author.email}}</td>
+      <td>{{artist.album_rating}}</td>
+      <td>{{artist.author.instrumentType}}</td>
+      <td>{{artist.album_name}}</td>
+      <td>{{artist.album_release_date}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+{%endblock%}

@@ -1,0 +1,61 @@
+{%extends 'base.html'%} {%block content%}
+<div class="row mt-5">
+  <div class="col-6">
+    <h1>Our Showroom</h1>
+    <p>
+      Welcome to CarDeal, your premier destination for exceptional automotive
+      experiences! Our state-of-the-art showroom showcases an impressive range
+      of the latest models from top brands, ensuring you find the perfect car to
+      suit your lifestyle and preferences. With a focus on customer
+      satisfaction, our knowledgeable and friendly team is dedicated to
+      providing personalized service, guiding you through every step of the
+      car-buying process. At CarDeal, we pride ourselves on offering competitive
+      pricing, flexible financing options, and a hassle-free buying experience.
+      Visit us today to explore our extensive inventory and drive away in your
+      dream car. Your journey begins at CarDeal!
+    </p>
+  </div>
+  <div class="col-6">
+    <img
+      src="https://c4.wallpaperflare.com/wallpaper/150/736/1019/audi-audi-s4-blue-car-car-wallpaper-preview.jpg"
+      alt="car image"
+      style="width: 90%"
+    />
+  </div>
+</div>
+<div class="d-flex flex-wrap justify-content-around mt-5 mb-5">
+  {% for i in brand %}
+  <a
+    href="{%url 'brand_wise_post' i.slug%}"
+    class="btn btn-info fw-bold"
+    id="{{i.id}}"
+    >{{i.name}}</a
+  >
+  {% endfor %}
+</div>
+<div class="search_result">
+  <h3>Total Car found: {{car | length}}</h3>
+</div>
+<div class="d-flex flex-wrap justify-content-center mt-5">
+  {%for i in car%}
+  <div class="col-sm-3 m-2">
+    <div class="card">
+      <div class="card-body">
+        <img
+          src="{{i.image.url}}"
+          class="card-img-top"
+          alt="car image"
+          style="height: 200px"
+        />
+        <h5 class="card-title mt-2">{{i.name }}</h5>
+        <p class="card-text">Car Price: {{i.price}} Tk</p>
+        <p class="card-text">Brand: {{i.brand.name}}</p>
+        <a href="{%url 'details' i.id%}" class="btn btn-primary"
+          >View Details</a
+        >
+      </div>
+    </div>
+  </div>
+  {%endfor%}
+</div>
+{%endblock%}
