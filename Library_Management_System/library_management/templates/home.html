@@ -1,0 +1,23 @@
+{%extends 'base.html'%} {%block content%}
+<h1>Home</h1>
+{%for book in books%}
+<div class="card">
+  <img
+    src="{{book.image.url}}"
+    class="card-img-top"
+    alt="..."
+    style="width: 180px"
+  />
+  <div class="card-body">
+    <h5 class="card-title">{{book.title}}</h5>
+    <p class="card-text">{{book.description}}</p>
+    <p class="card-text">{{book.borrowing_price}}</p>
+    <p>
+      Categories: {%for c in book.category.all%}
+      <button class="btn btn-warning" disabled>{{c.name}}</button>
+      {%endfor%}
+    </p>
+    <a href="{%url 'borrow' book.id%}" class="btn btn-primary">Borrow</a>
+  </div>
+  {%endfor%} {%endblock%}
+</div>
