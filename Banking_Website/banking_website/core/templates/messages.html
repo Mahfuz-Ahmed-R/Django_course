@@ -1,13 +1,12 @@
 {% for message in messages %}
-
 <div
-  class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md mt-2"
+  class="{% if message.tags == 'error' %}bg-red-100 border-t-4 border-red-500 text-red-900{% else %}bg-teal-100 border-t-4 border-teal-500 text-teal-900{% endif %} rounded-b px-4 py-3 shadow-md mt-2"
   role="alert"
 >
   <div class="flex">
     <div class="py-1">
       <svg
-        class="fill-current h-6 w-6 text-teal-500 mr-4"
+        class="fill-current h-6 w-6 {% if message.tags == 'error' %}text-red-500{% else %}text-teal-500{% endif %} mr-4"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
       >
@@ -17,10 +16,9 @@
       </svg>
     </div>
     <div>
-      <p class="font-bold">Success!</p>
+      <p class="font-bold">{% if message.tags == 'error' %}Not Success{% else %}Success!{% endif %}</p>
       <p class="text-sm">{{ message }}</p>
     </div>
   </div>
 </div>
-
 {% endfor %}

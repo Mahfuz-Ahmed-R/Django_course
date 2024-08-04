@@ -18,7 +18,7 @@ from transactions.forms import (
     TransferForm,
 )
 from transactions.models import Transaction
-
+total_balance = 0
 def send_transaction_email(user, amount, subject, template):
     message = render_to_string(template, {
         'user': user,
@@ -59,9 +59,11 @@ class DepositMoneyView(TransactionCreateMixin):
         return initial
 
     def form_valid(self, form):
+        global total_balance
         amount = form.cleaned_data.get('amount')
         account = self.request.user.account
         account.balance += amount
+        total_balance +=amount
         account.save(update_fields=['balance'])
 
         messages.success(
@@ -81,10 +83,11 @@ class WithdrawMoneyView(TransactionCreateMixin):
         return initial
 
     def form_valid(self, form):
+        global total_balance
         amount = form.cleaned_data.get('amount')
         account = self.request.user.account
 
-        if amount > account.balance:
+        if amount > total_balance:
             messages.error(
                 self.request,
                 'Unable to withdraw the requested amount. The bank is bankrupt.'
@@ -92,6 +95,7 @@ class WithdrawMoneyView(TransactionCreateMixin):
             return self.form_invalid(form)
 
         account.balance -= amount
+        total_balance -=amount
         account.save(update_fields=['balance'])
 
         messages.success(
@@ -150,11 +154,14 @@ class LoanRequestView(TransactionCreateMixin):
         return initial
 
     def form_valid(self, form):
+        global total_balance
         amount = form.cleaned_data.get('amount')
         current_loan_count = Transaction.objects.filter(
             account=self.request.user.account, transaction_type=3, loan_approve=True).count()
         if current_loan_count >= 3:
             return HttpResponse("You have crossed the loan limits")
+        else:
+            total_balance -=amount
         messages.success(
             self.request,
             f'Loan request for {"{:,.2f}".format(float(amount))}$ submitted successfully'
@@ -198,17 +205,19 @@ class TransactionReportView(LoginRequiredMixin, ListView):
         
 class PayLoanView(LoginRequiredMixin, View):
     def get(self, request, loan_id):
+        global total_balance
         loan = get_object_or_404(Transaction, id=loan_id)
         if loan.loan_approve:
             user_account = loan.account
             if loan.amount < user_account.balance:
                 user_account.balance -= loan.amount
+                total_balance +=loan.amount
                 loan.balance_after_transaction = user_account.balance
                 user_account.save()
                 loan.loan_approved = True
                 loan.transaction_type = LOAN_PAID
                 loan.save()
-                return redirect('transactions:loan_list')
+                return redirect('loan_list')
             else:
                 messages.error(
                     self.request,
